@@ -1,8 +1,10 @@
-﻿using GymAppAPI.Models.Request;
+﻿using GymAppAPI.Models.Common;
+using GymAppAPI.Models.Request;
 using GymAppAPI.Models.Response;
 using GymAppAPI.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 
 namespace GymAppAPI.Controllers
 {
@@ -10,6 +12,7 @@ namespace GymAppAPI.Controllers
     [Route("GymAppApi/V1.0/Users")]
     public class UserController : ControllerBase
     {
+
         private IUserService _iUserService;
 
         public UserController(IUserService iUserService) 
@@ -53,7 +56,7 @@ namespace GymAppAPI.Controllers
 
         [HttpPost]
         [Route("CreateAccount")]
-        public IActionResult CreateAccount(UserRequest oModel) 
+        public async Task<IActionResult> CreateAccount(UserRequest oModel) 
         {
             var response = new Response();
 
@@ -62,7 +65,7 @@ namespace GymAppAPI.Controllers
                 _iUserService.CreateAccount(oModel);
                 response.success = true;
                 response.message = "Account created successfully";
-                response.data = "";
+                response.data = "";         
             }
 
             catch(Exception ex)
@@ -74,6 +77,6 @@ namespace GymAppAPI.Controllers
 
 
             return Ok(response);
-        }
+        }       
     }
 }

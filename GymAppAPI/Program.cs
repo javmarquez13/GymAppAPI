@@ -2,6 +2,7 @@
 using GymAppAPI.Models.Common;
 using GymAppAPI.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
@@ -32,6 +33,9 @@ builder.Services.AddControllers();
 var appSettingsSection = builder.Configuration.GetSection("AppSettings");
 builder.Services.Configure<AppSettings>(appSettingsSection);
 
+var smtpSettingsSection = builder.Configuration.GetSection("SmtpSettings");
+builder.Services.Configure<SmtpSettings>(smtpSettingsSection);
+
 //From now on is Json web Token jwt
 var appSettings = appSettingsSection.Get<AppSettings>();
 var key = Encoding.ASCII.GetBytes(appSettings.Secret);
@@ -59,6 +63,7 @@ builder.Services.AddScoped<IClientService, ClientService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IPaymentService, PaymentService>();
 builder.Services.AddScoped<IMembershipService, MembershipService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
 #endregion
 
 
@@ -74,6 +79,7 @@ app.UseCors(MyAllowSpecificOrigins);
 
 //JWT
 app.UseAuthentication();
+
 
 
 // Configure the HTTP request pipeline.

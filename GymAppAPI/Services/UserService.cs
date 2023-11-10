@@ -14,10 +14,12 @@ namespace GymAppAPI.Services
     public class UserService : IUserService
     {
         private readonly AppSettings _appSettings;
+        private IEmailService _iEmailService;
 
-        public UserService(IOptions<AppSettings> appSettings)
+        public UserService(IOptions<AppSettings> appSettings, IEmailService iEmailService)
         {
             _appSettings = appSettings.Value;
+            _iEmailService = iEmailService;
         }
 
 
@@ -68,16 +70,23 @@ namespace GymAppAPI.Services
                         if (userValidation != null)
                             throw new Exception($"User {oModel.email} already exist");
 
-
-
                         User user = new User();
                         user.Email = oModel.email;
                         user.NickName = oModel.nickName;
                         user.Password = Encrypt.CalculateSHA256(oModel.password);
                         db.Users.Add(user);
                         db.SaveChanges();
-
                         transaction.Commit();
+
+
+
+                        EmailRequest request = new EmailRequest();
+                        request.To = "javmarquez13@gmail.com";
+                        request.Subject = "Gym for Everyone";
+                        request.Body = "<p>Account created successfully. Please follow this clikc to confirm your account <strong>confirmation</strong> of the email.</p>" +
+                                       "<p>Link</p>";
+
+                        _iEmailService.SendEmail(request);
                     }
                     catch (Exception ex)
                     {

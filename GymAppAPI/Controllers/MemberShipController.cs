@@ -19,7 +19,7 @@ namespace GymAppAPI.Controllers
 
         [HttpGet]
         [Route("Status")]
-        public IActionResult FindStatusByIdOrEmail([FromQuery] string id, [FromQuery] string email)
+        public IActionResult FindStatusByIdOrEmail([FromQuery] int? Id, [FromQuery] string? Email)
         {
             Response response = new Response();
 
@@ -27,11 +27,11 @@ namespace GymAppAPI.Controllers
             {
                 var membershipStatusResponse = new MembershipStatusResponse();
 
-                if (id != null)
-                    membershipStatusResponse = _iMembershipService.IsActiveById(Convert.ToInt32(id));
+                if (Id != null)
+                    membershipStatusResponse = _iMembershipService.IsActiveById(Convert.ToInt32(Id));
 
-                if (email != null)
-                    membershipStatusResponse = _iMembershipService.IsActiveByEmail(email);
+                if (Email != null)
+                    membershipStatusResponse = _iMembershipService.IsActiveByEmail(Email);
 
 
                 response.success = true;
